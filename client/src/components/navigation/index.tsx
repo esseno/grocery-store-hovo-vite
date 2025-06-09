@@ -1,4 +1,3 @@
-import Logo from "@/components/navigation/logo";
 import UserMenu from "@/components/navigation/user-menu";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,22 +7,21 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ThemeToggle } from "../theme/theme-toggle";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { Link } from "@tanstack/react-router";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "#", label: "Home" },
-  { href: "#", label: "Store" },
-  { href: "#", label: "About" },
+  { href: "/", label: "Home" },
+  { href: "/store", label: "Store" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Navigation() {
   return (
-    <header className="px-4 md:px-6">
-      <div className="flex h-16 items-center justify-between gap-4">
-        {/* Left side */}
+    <header className="px-4 md:px-6 sticky top-0 inset-x-0 border-b bg-background z-50">
+      <div className="flex h-[var(--h-nav)] items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          {/* Mobile menu trigger */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -72,8 +70,9 @@ export default function Navigation() {
                       <NavigationMenuLink
                         href={link.href}
                         className="py-1.5"
+                        asChild
                       >
-                        {link.label}
+                        <Link to={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -81,37 +80,26 @@ export default function Navigation() {
               </NavigationMenu>
             </PopoverContent>
           </Popover>
-          {/* Main nav */}
-          <div className="flex items-center gap-6">
-            <a
-              href="#"
-              className="text-primary hover:text-primary/90"
-            >
-              <Logo />
-            </a>
-            {/* Navigation menu */}
-            <NavigationMenu className="max-md:hidden">
-              <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-                      href={link.href}
-                      className="text-muted-foreground hover:text-primary py-1.5 font-medium"
-                    >
-                      {link.label}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+          <NavigationMenu className="max-md:hidden">
+            <NavigationMenuList className="gap-2">
+              {navigationLinks.map((link, index) => (
+                <NavigationMenuItem key={index}>
+                  <NavigationMenuLink
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                    asChild
+                  >
+                    <Link to={link.href}>{link.label}</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
-        {/* Right side */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <div className="flex items-center gap-2">
             <ThemeToggle />
           </div>
-          {/* User menu */}
           <UserMenu />
         </div>
       </div>
