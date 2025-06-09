@@ -21,7 +21,7 @@ declare module "@tanstack/react-router" {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider
-      defaultTheme="system"
+      defaultTheme="light"
       storageKey="vite-ui-theme"
     >
       <RouterProvider router={router} />
