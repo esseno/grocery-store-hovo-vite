@@ -1,4 +1,4 @@
-import { BoltIcon, LogOutIcon, UserIcon, UserRoundIcon } from "lucide-react";
+import { BoltIcon, LogOutIcon, UserIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "@tanstack/react-router";
+import { Icons } from "../ui/icons";
 
 interface UserMenuProps {
   isAuthed?: boolean;
@@ -19,7 +21,7 @@ interface UserMenuProps {
 export default function UserMenu({ isAuthed = false }: UserMenuProps) {
   return (
     <>
-      {isAuthed ? (
+      {isAuthed ?
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -75,16 +77,17 @@ export default function UserMenu({ isAuthed = false }: UserMenuProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
-        <Button
-          type="button"
-          className="md:text-base"
-          variant={"tertiary"}
+      : <Button
+          variant="ghost"
+          className="text-base"
+          asChild
         >
-          <UserRoundIcon />
-          Login
+          <Link to="/login">
+            <Icons.RemixIcons.User3Fill />
+            Login
+          </Link>
         </Button>
-      )}
+      }
     </>
   );
 }
