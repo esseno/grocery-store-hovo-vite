@@ -11,8 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RootImport } from './routes/_root'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as IndexImport } from './routes/index'
+import { Route as RootIndexImport } from './routes/_root.index'
+import { Route as RootStoreImport } from './routes/_root.store'
+import { Route as RootAboutImport } from './routes/_root.about'
 import { Route as AuthVerifyImport } from './routes/_auth.verify'
 import { Route as AuthRegisterImport } from './routes/_auth.register'
 import { Route as AuthLoginImport } from './routes/_auth.login'
@@ -21,15 +24,32 @@ import { Route as AuthForgotPasswordTokenIdImport } from './routes/_auth.forgot-
 
 // Create/Update Routes
 
+const RootRoute = RootImport.update({
+  id: '/_root',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const RootIndexRoute = RootIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => RootRoute,
+} as any)
+
+const RootStoreRoute = RootStoreImport.update({
+  id: '/store',
+  path: '/store',
+  getParentRoute: () => RootRoute,
+} as any)
+
+const RootAboutRoute = RootAboutImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => RootRoute,
 } as any)
 
 const AuthVerifyRoute = AuthVerifyImport.update({
@@ -66,18 +86,18 @@ const AuthForgotPasswordTokenIdRoute = AuthForgotPasswordTokenIdImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/_root': {
+      id: '/_root'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof RootImport
       parentRoute: typeof rootRoute
     }
     '/_auth/forgot-password': {
@@ -107,6 +127,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/verify'
       preLoaderRoute: typeof AuthVerifyImport
       parentRoute: typeof AuthImport
+    }
+    '/_root/about': {
+      id: '/_root/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof RootAboutImport
+      parentRoute: typeof RootImport
+    }
+    '/_root/store': {
+      id: '/_root/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof RootStoreImport
+      parentRoute: typeof RootImport
+    }
+    '/_root/': {
+      id: '/_root/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof RootIndexImport
+      parentRoute: typeof RootImport
     }
     '/_auth/forgot-password/$tokenId': {
       id: '/_auth/forgot-password/$tokenId'
@@ -147,76 +188,104 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface RootRouteChildren {
+  RootAboutRoute: typeof RootAboutRoute
+  RootStoreRoute: typeof RootStoreRoute
+  RootIndexRoute: typeof RootIndexRoute
+}
+
+const RootRouteChildren: RootRouteChildren = {
+  RootAboutRoute: RootAboutRoute,
+  RootStoreRoute: RootStoreRoute,
+  RootIndexRoute: RootIndexRoute,
+}
+
+const RootRouteWithChildren = RootRoute._addFileChildren(RootRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
+  '': typeof RootRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/verify': typeof AuthVerifyRoute
+  '/about': typeof RootAboutRoute
+  '/store': typeof RootStoreRoute
+  '/': typeof RootIndexRoute
   '/forgot-password/$tokenId': typeof AuthForgotPasswordTokenIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/verify': typeof AuthVerifyRoute
+  '/about': typeof RootAboutRoute
+  '/store': typeof RootStoreRoute
+  '/': typeof RootIndexRoute
   '/forgot-password/$tokenId': typeof AuthForgotPasswordTokenIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/_root': typeof RootRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/verify': typeof AuthVerifyRoute
+  '/_root/about': typeof RootAboutRoute
+  '/_root/store': typeof RootStoreRoute
+  '/_root/': typeof RootIndexRoute
   '/_auth/forgot-password/$tokenId': typeof AuthForgotPasswordTokenIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | ''
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify'
+    | '/about'
+    | '/store'
+    | '/'
     | '/forgot-password/$tokenId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | ''
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify'
+    | '/about'
+    | '/store'
+    | '/'
     | '/forgot-password/$tokenId'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
+    | '/_root'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
     | '/_auth/verify'
+    | '/_root/about'
+    | '/_root/store'
+    | '/_root/'
     | '/_auth/forgot-password/$tokenId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  RootRoute: typeof RootRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  RootRoute: RootRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -229,12 +298,9 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/_auth"
+        "/_auth",
+        "/_root"
       ]
-    },
-    "/": {
-      "filePath": "index.tsx"
     },
     "/_auth": {
       "filePath": "_auth.tsx",
@@ -243,6 +309,14 @@ export const routeTree = rootRoute
         "/_auth/login",
         "/_auth/register",
         "/_auth/verify"
+      ]
+    },
+    "/_root": {
+      "filePath": "_root.tsx",
+      "children": [
+        "/_root/about",
+        "/_root/store",
+        "/_root/"
       ]
     },
     "/_auth/forgot-password": {
@@ -263,6 +337,18 @@ export const routeTree = rootRoute
     "/_auth/verify": {
       "filePath": "_auth.verify.tsx",
       "parent": "/_auth"
+    },
+    "/_root/about": {
+      "filePath": "_root.about.tsx",
+      "parent": "/_root"
+    },
+    "/_root/store": {
+      "filePath": "_root.store.tsx",
+      "parent": "/_root"
+    },
+    "/_root/": {
+      "filePath": "_root.index.tsx",
+      "parent": "/_root"
     },
     "/_auth/forgot-password/$tokenId": {
       "filePath": "_auth.forgot-password.$tokenId.tsx",
